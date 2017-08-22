@@ -1,6 +1,7 @@
 package com.legalimpurity.bakingapp;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,7 +14,6 @@ import com.legalimpurity.bakingapp.objects.Recipe;
 import com.legalimpurity.bakingapp.retrofitInterfaces.BakingClient;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -82,7 +82,9 @@ public class SelectARecipe extends AppCompatActivity {
         mAdapter = new RecipeCardsAdapter(act, new RecipeCardClick() {
             @Override
             public void onRecipeCardCLick(Recipe recipe) {
-
+                Intent goToRecipeListActivity = new Intent(act,RecipeListActivity.class);
+                goToRecipeListActivity.putExtra(RecipeListActivity.RECIPE_OBJECT_KEY,recipe);
+                act.startActivity(goToRecipeListActivity);
             }
         });
 

@@ -3,8 +3,11 @@ package com.legalimpurity.bakingapp;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.design.widget.FloatingActionButton;
@@ -15,127 +18,118 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 
-import com.legalimpurity.bakingapp.dummy.DummyContent;
+import com.legalimpurity.bakingapp.adapters.RecipeIngridientsDescriptionAdapter;
+import com.legalimpurity.bakingapp.listeners.RecipeIngridentClick;
+import com.legalimpurity.bakingapp.objects.Recipe;
+import com.legalimpurity.bakingapp.objects.Step;
 
+import java.util.ArrayList;
 import java.util.List;
 
-/**
- * An activity representing a list of Recipes. This activity
- * has different presentations for handset and tablet-size devices. On
- * handsets, the activity presents a list of items, which when touched,
- * lead to a {@link RecipeDetailActivity} representing
- * item details. On tablets, the activity presents the list of items and
- * item details side-by-side using two vertical panes.
- */
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class RecipeListActivity extends AppCompatActivity {
 
-    /**
-     * Whether or not the activity is in two-pane mode, i.e. running on a tablet
-     * device.
-     */
+
+    public static final String RECIPE_OBJECT_KEY = "0a46c76c98b80b4ed6befbe3760b28b1";
+
     private boolean mTwoPane;
+    private Recipe recipe;
+    private RecipeIngridientsDescriptionAdapter mAdapter;
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
+    @BindView(R.id.recipe_list)
+    View recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_list);
+        ButterKnife.bind(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        processFlow(this,savedInstanceState);
 
-        View recyclerView = findViewById(R.id.recipe_list);
         assert recyclerView != null;
-        setupRecyclerView((RecyclerView) recyclerView);
+        setupRecyclerView(this, (RecyclerView) recyclerView);
 
         if (findViewById(R.id.recipe_detail_container) != null) {
-            // The detail container view will be present only in the
-            // large-screen layouts (res/values-w900dp).
-            // If this view is present, then the
-            // activity should be in two-pane mode.
             mTwoPane = true;
         }
+
+        if(mTwoPane)
+            setInitialFragment(this);
     }
 
-    private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.ITEMS));
+    @Override
+    protected void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(RECIPE_OBJECT_KEY,recipe);
     }
 
-    public class SimpleItemRecyclerViewAdapter
-            extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
-        private final List<DummyContent.DummyItem> mValues;
-
-        public SimpleItemRecyclerViewAdapter(List<DummyContent.DummyItem> items) {
-            mValues = items;
+    private void processFlow(AppCompatActivity act, Bundle savedInstanceState)
+    {
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(RECIPE_OBJECT_KEY)) {
+                recipe = (Recipe) getIntent().getExtras().getParcelable(RECIPE_OBJECT_KEY);
+            }
         }
-
-        @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.recipe_list_content, parent, false);
-            return new ViewHolder(view);
+        else if(getIntent() != null && getIntent().getExtras() != null) {
+            recipe = (Recipe) getIntent().getExtras().getParcelable(RECIPE_OBJECT_KEY);
         }
+        else
+            NavUtils.navigateUpFromSameTask(act);
+    }
 
-        @Override
-        public void onBindViewHolder(final ViewHolder holder, int position) {
-            holder.mItem = mValues.get(position);
-            holder.mIdView.setText(mValues.get(position).id);
-            holder.mContentView.setText(mValues.get(position).content);
 
-            holder.mView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mTwoPane) {
+    private void setupRecyclerView(final AppCompatActivity act, @NonNull RecyclerView recyclerView) {
+        recyclerView.setLayoutManager(new LinearLayoutManager(act));
+
+        recyclerView.setHasFixedSize(true);
+
+        mAdapter = new RecipeIngridientsDescriptionAdapter(act, recipe, new RecipeIngridentClick() {
+            @Override
+            public void onRecipeIngridentCardCLick(View v, Object recipeOrStep) {
+                if(mTwoPane) {
+                    if (recipeOrStep instanceof Step) {
                         Bundle arguments = new Bundle();
-                        arguments.putString(RecipeDetailFragment.ARG_ITEM_ID, holder.mItem.id);
-                        RecipeDetailFragment fragment = new RecipeDetailFragment();
+                        arguments.putParcelable(RecipeStepDescriptionFragment.ARG_STEP_OBJ, (Step) recipeOrStep);
+                        RecipeStepDescriptionFragment fragment = new RecipeStepDescriptionFragment();
                         fragment.setArguments(arguments);
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.recipe_detail_container, fragment)
                                 .commit();
-                    } else {
-                        Context context = v.getContext();
-                        Intent intent = new Intent(context, RecipeDetailActivity.class);
-                        intent.putExtra(RecipeDetailFragment.ARG_ITEM_ID, holder.mItem.id);
-
-                        context.startActivity(intent);
                     }
                 }
-            });
-        }
-
-        @Override
-        public int getItemCount() {
-            return mValues.size();
-        }
-
-        public class ViewHolder extends RecyclerView.ViewHolder {
-            public final View mView;
-            public final TextView mIdView;
-            public final TextView mContentView;
-            public DummyContent.DummyItem mItem;
-
-            public ViewHolder(View view) {
-                super(view);
-                mView = view;
-                mIdView = (TextView) view.findViewById(R.id.id);
-                mContentView = (TextView) view.findViewById(R.id.content);
+                else
+                {
+                    Context context = v.getContext();
+                    Intent intent = new Intent(context, RecipeDetailActivity.class);
+                    intent.putExtra(RecipeStepDescriptionFragment.ARG_STEP_OBJ, (Parcelable) recipeOrStep);
+                    context.startActivity(intent);
+                }
             }
+        });
 
-            @Override
-            public String toString() {
-                return super.toString() + " '" + mContentView.getText() + "'";
-            }
-        }
+        recyclerView.setAdapter(mAdapter);
     }
+
+    private void setInitialFragment(AppCompatActivity act)
+    {
+        Bundle arguments = new Bundle();
+        arguments.putParcelable(RecipeStepDescriptionFragment.ARG_STEP_OBJ, recipe.getSteps().get(0));
+        RecipeStepDescriptionFragment fragment = new RecipeStepDescriptionFragment();
+        fragment.setArguments(arguments);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.recipe_detail_container, fragment)
+                .commit();
+    }
+
 }

@@ -11,50 +11,54 @@ import android.widget.TextView;
 import com.legalimpurity.bakingapp.R;
 import com.legalimpurity.bakingapp.Utils.UrlUtils;
 import com.legalimpurity.bakingapp.listeners.RecipeCardClick;
+import com.legalimpurity.bakingapp.listeners.RecipeIngridentClick;
+import com.legalimpurity.bakingapp.objects.Ingredient;
 import com.legalimpurity.bakingapp.objects.Recipe;
+import com.legalimpurity.bakingapp.objects.Step;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by rajatkhanna on 21/08/17.
  */
 
-public class RecipeCardsAdapter extends RecyclerView.Adapter<RecipeCardsAdapter.RecipeItemHolder>{
-    private ArrayList<Recipe> recipeObjs;
-    private Activity act;
-    private RecipeCardClick clicker;
+public class RecipeIngridientsDescriptionAdapter extends RecyclerView.Adapter<RecipeIngridientsDescriptionAdapter.RecipeItemHolder>{
 
-    public RecipeCardsAdapter(Activity act, RecipeCardClick clicker)
+    private Recipe recipeObj;
+    private Activity act;
+    private RecipeIngridentClick clicker;
+
+    public RecipeIngridientsDescriptionAdapter(Activity act, Recipe recipeObj,RecipeIngridentClick clicker)
     {
         this.act = act;
+        this.recipeObj = recipeObj;
         this.clicker = clicker;
     }
 
-    public void setMoviesData(ArrayList<Recipe> recipeObjs)
-    {
-        this.recipeObjs = recipeObjs;
-        notifyDataSetChanged();
-    }
 
     @Override
     public RecipeItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View layoutView = LayoutInflater.from(act).inflate(R.layout.recipe_card, parent,false);
+        View layoutView = LayoutInflater.from(act).inflate(R.layout.recipe_step_description, parent,false);
         return new RecipeItemHolder(layoutView);
     }
 
     @Override
     public void onBindViewHolder(RecipeItemHolder holder, int position) {
-        Recipe mo = recipeObjs.get(position);
-        holder.bind(mo);
+        if(position == 0)
+            holder.bind(recipeObj);
+        else {
+            Step mo = recipeObj.getSteps().get(position-1);
+            holder.bind(mo);
+        }
     }
 
     @Override
     public int getItemCount() {
-        if(recipeObjs == null)
-            return 0;
-        return recipeObjs.size();
+        if(recipeObj == null)
+            return 1;
+        return recipeObj.getSteps().size() + 1;
     }
 
     public class RecipeItemHolder extends RecyclerView.ViewHolder
@@ -70,30 +74,19 @@ public class RecipeCardsAdapter extends RecyclerView.Adapter<RecipeCardsAdapter.
             rootView = (View) itemView.findViewById(R.id.root_view);
         }
 
-        void bind(final Recipe recipe)
+        void bind(final Object obj)
         {
             rootView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    clicker.onRecipeCardCLick(recipe);
+                    clicker.onRecipeIngridentCardCLick(v,obj);
                 }
             });
-            recipeName.setText(recipe.getName());
-            Picasso.with(act)
-                    .load(UrlUtils.BAKING_API_ROOT_URL + UrlUtils.BAKING_API_IMAGE_APPEND + recipe.getImage())
-                    .placeholder(R.mipmap.lamb_cutlets)
-                    .error(R.mipmap.lamb_cutlets)
-                    .into(backgroundImage, new Callback() {
-                        @Override
-                        public void onSuccess() {
 
-                        }
-
-                        @Override
-                        public void onError() {
-
-                        }
-                    });
+            if(obj instanceof Step)
+                recipeName.setText(((Step)obj).getShortDescription());
+            else if (obj instanceof Recipe)
+                recipeName.setText(act.getResources().getString(R.string.recipe_ingredients));
         }
     }
 }
