@@ -1,4 +1,4 @@
-package com.legalimpurity.bakingapp;
+package com.legalimpurity.bakingapp.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,21 +10,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 
+import com.legalimpurity.bakingapp.R;
+import com.legalimpurity.bakingapp.fragments.RecipeStepDescriptionFragment;
 import com.legalimpurity.bakingapp.adapters.RecipeIngridientsDescriptionAdapter;
 import com.legalimpurity.bakingapp.listeners.RecipeIngridentClick;
 import com.legalimpurity.bakingapp.objects.Recipe;
 import com.legalimpurity.bakingapp.objects.Step;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

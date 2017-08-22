@@ -1,4 +1,4 @@
-package com.legalimpurity.bakingapp;
+package com.legalimpurity.bakingapp.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import com.legalimpurity.bakingapp.R;
 import com.legalimpurity.bakingapp.adapters.RecipeCardsAdapter;
 import com.legalimpurity.bakingapp.listeners.RecipeCardClick;
 import com.legalimpurity.bakingapp.objects.Recipe;

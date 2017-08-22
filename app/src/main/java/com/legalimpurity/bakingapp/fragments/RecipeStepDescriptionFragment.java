@@ -1,4 +1,4 @@
-package com.legalimpurity.bakingapp;
+package com.legalimpurity.bakingapp.fragments;
 
 import android.app.Activity;
 import android.net.Uri;
@@ -32,6 +32,7 @@ import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.legalimpurity.bakingapp.R;
 import com.legalimpurity.bakingapp.Utils.UrlUtils;
 import com.legalimpurity.bakingapp.objects.Step;
 import com.squareup.picasso.Callback;
