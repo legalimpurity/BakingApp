@@ -3,8 +3,8 @@ package com.legalimpurity.bakingapp.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,8 +14,9 @@ import android.view.View;
 
 
 import com.legalimpurity.bakingapp.R;
+import com.legalimpurity.bakingapp.fragments.RecipeIngredientsDescriptionFragment;
 import com.legalimpurity.bakingapp.fragments.RecipeStepDescriptionFragment;
-import com.legalimpurity.bakingapp.adapters.RecipeIngridientsDescriptionAdapter;
+import com.legalimpurity.bakingapp.adapters.RecipeIngredientsDescriptionAdapter;
 import com.legalimpurity.bakingapp.listeners.RecipeIngridentClick;
 import com.legalimpurity.bakingapp.objects.Recipe;
 import com.legalimpurity.bakingapp.objects.Step;
@@ -30,7 +31,7 @@ public class RecipeListActivity extends AppCompatActivity {
 
     private boolean mTwoPane;
     private Recipe recipe;
-    private RecipeIngridientsDescriptionAdapter mAdapter;
+    private RecipeIngredientsDescriptionAdapter mAdapter;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -88,30 +89,21 @@ public class RecipeListActivity extends AppCompatActivity {
 
         recyclerView.setHasFixedSize(true);
 
-        mAdapter = new RecipeIngridientsDescriptionAdapter(act, recipe, new RecipeIngridentClick() {
+        mAdapter = new RecipeIngredientsDescriptionAdapter(act, recipe, new RecipeIngridentClick() {
             @Override
             public void onRecipeIngridentCardCLick(View v, int pos) {
                 if(mTwoPane) {
+                    Fragment fragment;
                     if (pos == 0) {
-                        Bundle arguments = new Bundle();
-                        arguments.putParcelable(RecipeStepDescriptionFragment.ARG_STEP_OBJ, (Step) recipe.getSteps().get(0));
-                        RecipeStepDescriptionFragment fragment = new RecipeStepDescriptionFragment();
-                        fragment.setArguments(arguments);
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.recipe_detail_container, fragment)
-                                .commit();
+                        fragment = RecipeIngredientsDescriptionFragment.newInstance(recipe);
                     }
                     else
                     {
-                        Bundle arguments = new Bundle();
-                        arguments.putParcelable(RecipeStepDescriptionFragment.ARG_STEP_OBJ, (Step) recipe.getSteps().get(pos-1));
-                        RecipeStepDescriptionFragment fragment = new RecipeStepDescriptionFragment();
-                        fragment.setArguments(arguments);
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.recipe_detail_container, fragment)
-                                .commit();
-
+                        fragment = RecipeStepDescriptionFragment.newInstance((Step) recipe.getSteps().get(pos-1));
                     }
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.recipe_detail_container, fragment)
+                            .commit();
                 }
                 else
                 {
@@ -129,12 +121,8 @@ public class RecipeListActivity extends AppCompatActivity {
 
     private void setInitialFragment(AppCompatActivity act)
     {
-        Bundle arguments = new Bundle();
-        arguments.putParcelable(RecipeStepDescriptionFragment.ARG_STEP_OBJ, recipe.getSteps().get(0));
-        RecipeStepDescriptionFragment fragment = new RecipeStepDescriptionFragment();
-        fragment.setArguments(arguments);
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.recipe_detail_container, fragment)
+                .replace(R.id.recipe_detail_container, RecipeIngredientsDescriptionFragment.newInstance(recipe))
                 .commit();
     }
 

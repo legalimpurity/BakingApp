@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v7.app.AppCompatActivity;
 
 import com.legalimpurity.bakingapp.R;
+import com.legalimpurity.bakingapp.fragments.RecipeIngredientsDescriptionFragment;
 import com.legalimpurity.bakingapp.fragments.RecipeStepDescriptionFragment;
 import com.legalimpurity.bakingapp.objects.Recipe;
 
@@ -22,7 +23,7 @@ public class PotraitRecipeDetailPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         if(position == 0)
-            return RecipeStepDescriptionFragment.newInstance(recipe.getSteps().get(0));
+            return RecipeIngredientsDescriptionFragment.newInstance(recipe);
         else
             return RecipeStepDescriptionFragment.newInstance(recipe.getSteps().get(position - 1));
     }

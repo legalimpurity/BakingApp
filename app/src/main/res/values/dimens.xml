@@ -7,5 +7,6 @@
 
     <dimen name="recipe_main_page_height">160dp</dimen>
     <dimen name="recipe_step_height">80dp</dimen>
+    <dimen name="ingredients_step_height">160dp</dimen>
 
 </resources>

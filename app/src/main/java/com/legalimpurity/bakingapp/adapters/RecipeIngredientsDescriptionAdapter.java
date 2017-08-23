@@ -9,28 +9,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.legalimpurity.bakingapp.R;
-import com.legalimpurity.bakingapp.Utils.UrlUtils;
-import com.legalimpurity.bakingapp.listeners.RecipeCardClick;
 import com.legalimpurity.bakingapp.listeners.RecipeIngridentClick;
-import com.legalimpurity.bakingapp.objects.Ingredient;
 import com.legalimpurity.bakingapp.objects.Recipe;
 import com.legalimpurity.bakingapp.objects.Step;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
-
-import java.util.List;
 
 /**
  * Created by rajatkhanna on 21/08/17.
  */
 
-public class RecipeIngridientsDescriptionAdapter extends RecyclerView.Adapter<RecipeIngridientsDescriptionAdapter.RecipeItemHolder>{
+public class RecipeIngredientsDescriptionAdapter extends RecyclerView.Adapter<RecipeIngredientsDescriptionAdapter.RecipeItemHolder>{
 
     private Recipe recipeObj;
     private Activity act;
     private RecipeIngridentClick clicker;
 
-    public RecipeIngridientsDescriptionAdapter(Activity act, Recipe recipeObj,RecipeIngridentClick clicker)
+    public RecipeIngredientsDescriptionAdapter(Activity act, Recipe recipeObj, RecipeIngridentClick clicker)
     {
         this.act = act;
         this.recipeObj = recipeObj;
