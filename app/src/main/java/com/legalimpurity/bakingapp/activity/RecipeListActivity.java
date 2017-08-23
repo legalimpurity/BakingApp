@@ -90,23 +90,35 @@ public class RecipeListActivity extends AppCompatActivity {
 
         mAdapter = new RecipeIngridientsDescriptionAdapter(act, recipe, new RecipeIngridentClick() {
             @Override
-            public void onRecipeIngridentCardCLick(View v, Object recipeOrStep) {
+            public void onRecipeIngridentCardCLick(View v, int pos) {
                 if(mTwoPane) {
-                    if (recipeOrStep instanceof Step) {
+                    if (pos == 0) {
                         Bundle arguments = new Bundle();
-                        arguments.putParcelable(RecipeStepDescriptionFragment.ARG_STEP_OBJ, (Step) recipeOrStep);
+                        arguments.putParcelable(RecipeStepDescriptionFragment.ARG_STEP_OBJ, (Step) recipe.getSteps().get(0));
                         RecipeStepDescriptionFragment fragment = new RecipeStepDescriptionFragment();
                         fragment.setArguments(arguments);
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.recipe_detail_container, fragment)
                                 .commit();
                     }
+                    else
+                    {
+                        Bundle arguments = new Bundle();
+                        arguments.putParcelable(RecipeStepDescriptionFragment.ARG_STEP_OBJ, (Step) recipe.getSteps().get(pos-1));
+                        RecipeStepDescriptionFragment fragment = new RecipeStepDescriptionFragment();
+                        fragment.setArguments(arguments);
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.recipe_detail_container, fragment)
+                                .commit();
+
+                    }
                 }
                 else
                 {
                     Context context = v.getContext();
                     Intent intent = new Intent(context, RecipeDetailActivity.class);
-                    intent.putExtra(RecipeStepDescriptionFragment.ARG_STEP_OBJ, (Parcelable) recipeOrStep);
+                    intent.putExtra(RecipeDetailActivity.ARG_POS, pos);
+                    intent.putExtra(RecipeDetailActivity.ARG_RECIPE_OBJ, recipe);
                     context.startActivity(intent);
                 }
             }

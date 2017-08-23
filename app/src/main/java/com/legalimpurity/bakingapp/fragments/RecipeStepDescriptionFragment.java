@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,6 +48,17 @@ import java.net.URL;
 
 public class RecipeStepDescriptionFragment extends Fragment{
 
+
+    public static RecipeStepDescriptionFragment newInstance(Step stepObj) {
+        RecipeStepDescriptionFragment fragment = new RecipeStepDescriptionFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(ARG_STEP_OBJ, stepObj);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+
+
     public static final String ARG_STEP_OBJ = "ARG_STEP_OBJ";
 
     private Step step;
@@ -65,12 +77,6 @@ public class RecipeStepDescriptionFragment extends Fragment{
 
         if (getArguments().containsKey(ARG_STEP_OBJ)) {
             step = getArguments().getParcelable(ARG_STEP_OBJ);
-
-            Activity activity = this.getActivity();
-            CollapsingToolbarLayout appBarLayout = activity.findViewById(R.id.toolbar_layout);
-            if (appBarLayout != null) {
-                appBarLayout.setTitle(step.getShortDescription());
-            }
         }
 
     }

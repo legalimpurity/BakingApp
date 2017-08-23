@@ -9,5 +9,5 @@ import com.legalimpurity.bakingapp.objects.Recipe;
  */
 
 public interface RecipeIngridentClick {
-    void onRecipeIngridentCardCLick(View v, Object recipe);
+    void onRecipeIngridentCardCLick(View v, int pos);
 }

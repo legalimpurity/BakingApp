@@ -46,12 +46,7 @@ public class RecipeIngridientsDescriptionAdapter extends RecyclerView.Adapter<Re
 
     @Override
     public void onBindViewHolder(RecipeItemHolder holder, int position) {
-        if(position == 0)
-            holder.bind(recipeObj);
-        else {
-            Step mo = recipeObj.getSteps().get(position-1);
-            holder.bind(mo);
-        }
+        holder.bind(position);
     }
 
     @Override
@@ -74,18 +69,17 @@ public class RecipeIngridientsDescriptionAdapter extends RecyclerView.Adapter<Re
             rootView = (View) itemView.findViewById(R.id.root_view);
         }
 
-        void bind(final Object obj)
+        void bind(final int pos)
         {
             rootView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    clicker.onRecipeIngridentCardCLick(v,obj);
+                    clicker.onRecipeIngridentCardCLick(v,pos);
                 }
             });
-
-            if(obj instanceof Step)
-                recipeName.setText(((Step)obj).getShortDescription());
-            else if (obj instanceof Recipe)
+            if(pos != 0)
+                recipeName.setText(((Step)recipeObj.getSteps().get(pos -1)).getShortDescription());
+            else
                 recipeName.setText(act.getResources().getString(R.string.recipe_ingredients));
         }
     }

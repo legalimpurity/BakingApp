@@ -5,4 +5,5 @@
     <string name="recipe_step_description">Recipe Step description</string>
 
     <string name="recipe_ingredients">Recipe Ingredients</string>
+    <string name="recipe_steps_prefix">Step %d</string>
 </resources>

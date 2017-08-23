@@ -2,6 +2,8 @@ package com.legalimpurity.bakingapp.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
@@ -9,8 +11,11 @@ import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 
 import com.legalimpurity.bakingapp.R;
-import com.legalimpurity.bakingapp.fragments.RecipeStepDescriptionFragment;
-import com.legalimpurity.bakingapp.objects.Step;
+import com.legalimpurity.bakingapp.adapters.PotraitRecipeDetailPagerAdapter;
+import com.legalimpurity.bakingapp.objects.Recipe;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * An activity representing a single Recipe detail screen. This
@@ -20,11 +25,29 @@ import com.legalimpurity.bakingapp.objects.Step;
  */
 public class RecipeDetailActivity extends AppCompatActivity {
 
+    public static final String ARG_RECIPE_OBJ = "ARG_RECIPE_OBJ";
+    public static final String ARG_POS = "ARG_POS";
+
+    private PotraitRecipeDetailPagerAdapter mSectionsPagerAdapter;
+
+    private int pos;
+    private Recipe recipe;
+
+    @BindView(R.id.container)
+    ViewPager mViewPager;
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
+    @BindView(R.id.tabs)
+    TabLayout tabs;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_detail);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
+        ButterKnife.bind(this);
+
         setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();
@@ -32,25 +55,8 @@ public class RecipeDetailActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        // else fragment stays in device.
-        if (savedInstanceState == null) {
-            if(getIntent() != null && getIntent().getParcelableExtra(RecipeStepDescriptionFragment.ARG_STEP_OBJ) != null) {
-                Object receivedObj = getIntent().getParcelableExtra(RecipeStepDescriptionFragment.ARG_STEP_OBJ);
-                if (receivedObj instanceof Step) {
-                    Bundle arguments = new Bundle();
-                    arguments.putParcelable(RecipeStepDescriptionFragment.ARG_STEP_OBJ, (Step) receivedObj);
-                    RecipeStepDescriptionFragment fragment = new RecipeStepDescriptionFragment();
-                    fragment.setArguments(arguments);
-                    getSupportFragmentManager().beginTransaction()
-                            .add(R.id.recipe_detail_container, fragment)
-                            .commit();
-                }
-                else
-                {
-
-                }
-            }
-        }
+        getData(this,savedInstanceState);
+        setAdapter(this);
     }
 
     @Override
@@ -61,5 +67,20 @@ public class RecipeDetailActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void getData(AppCompatActivity act, Bundle savedInstanceState)
+    {
+        pos = getIntent().getIntExtra(ARG_POS,0);
+        recipe = getIntent().getParcelableExtra(ARG_RECIPE_OBJ);
+    }
+
+    private void setAdapter(AppCompatActivity act)
+    {
+        mSectionsPagerAdapter = new PotraitRecipeDetailPagerAdapter(act,recipe);
+        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager.setAdapter(mSectionsPagerAdapter);
+        mViewPager.setCurrentItem(pos);
+        tabs.setupWithViewPager(mViewPager);
     }
 }
