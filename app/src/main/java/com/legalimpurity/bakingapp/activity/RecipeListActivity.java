@@ -48,6 +48,7 @@ public class RecipeListActivity extends AppCompatActivity {
         if(toolbar!=null) {
             setSupportActionBar(toolbar);
             toolbar.setTitle(getTitle());
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
         processFlow(this,savedInstanceState);
