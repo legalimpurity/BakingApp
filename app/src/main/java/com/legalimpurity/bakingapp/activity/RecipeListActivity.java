@@ -102,7 +102,7 @@ public class RecipeListActivity extends AppCompatActivity {
                     }
                     else
                     {
-                        fragment = RecipeStepDescriptionFragment.newInstance((Step) recipe.getSteps().get(pos-1));
+                        fragment = RecipeStepDescriptionFragment.newInstance((Step) recipe.getSteps().get(pos-1),true);
                     }
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.recipe_detail_container, fragment)

@@ -45,14 +45,18 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 
 public class RecipeStepDescriptionFragment extends Fragment{
 
 
-    public static RecipeStepDescriptionFragment newInstance(Step stepObj) {
+    public static RecipeStepDescriptionFragment newInstance(Step stepObj, boolean videoToStartOnInitialize) {
         RecipeStepDescriptionFragment fragment = new RecipeStepDescriptionFragment();
         Bundle args = new Bundle();
         args.putParcelable(ARG_STEP_OBJ, stepObj);
+        args.putBoolean(ARG_VIDEO_TO_BE_LOADED, videoToStartOnInitialize);
         fragment.setArguments(args);
         return fragment;
     }
@@ -60,13 +64,21 @@ public class RecipeStepDescriptionFragment extends Fragment{
 
 
     public static final String ARG_STEP_OBJ = "ARG_STEP_OBJ";
+    public static final String ARG_VIDEO_TO_BE_LOADED = "ARG_VIDEO_TO_BE_LOADED";
 
     private Step step;
-
+    private boolean videoPlayed = false;
+    private boolean onCreateView = false;
     private SimpleExoPlayer mExoPlayer;
-    private SimpleExoPlayerView mPlayerView;
 
-    private ImageView imageView;
+    @BindView(R.id.recipePlayerView)
+    SimpleExoPlayerView mPlayerView;
+
+    @BindView(R.id.recipeImageView)
+    ImageView imageView;
+
+    @BindView(R.id.recipe_detail)
+    TextView recipe_detail;
 
     public RecipeStepDescriptionFragment() {
     }
@@ -78,7 +90,6 @@ public class RecipeStepDescriptionFragment extends Fragment{
         if (getArguments().containsKey(ARG_STEP_OBJ)) {
             step = getArguments().getParcelable(ARG_STEP_OBJ);
         }
-
     }
 
     @Override
@@ -88,25 +99,29 @@ public class RecipeStepDescriptionFragment extends Fragment{
     }
 
     @Override
+    public void setMenuVisibility(final boolean visible) {
+        super.setMenuVisibility(visible);
+        if (visible && !videoPlayed && onCreateView && !TextUtils.isEmpty(step.getVideoURL())) {
+            initializePlayer(getActivity());
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.recipe_detail, container, false);
-
-        TextView recipe_detail = (TextView) rootView.findViewById(R.id.recipe_detail);
+        ButterKnife.bind(this,rootView);
         if (step != null) {
             recipe_detail.setText(step.getDescription());
         }
 
-        mPlayerView = rootView.findViewById(R.id.recipePlayerView);
-        imageView = rootView.findViewById(R.id.recipeImageView);
-
         if(!TextUtils.isEmpty(step.getVideoURL()))
         {
-            Uri.Builder b = Uri.parse(step.getVideoURL()).buildUpon();
-            initializePlayer(getActivity(),b.build());
-            mPlayerView.setVisibility(View.VISIBLE);
-            imageView.setVisibility(View.GONE);
 
+            if (getArguments().containsKey(ARG_VIDEO_TO_BE_LOADED)) {
+                if(getArguments().getBoolean(ARG_VIDEO_TO_BE_LOADED))
+                    initializePlayer(getActivity());
+            }
         }
         else if(!TextUtils.isEmpty(step.getThumbnailURL()))
         {
@@ -131,12 +146,21 @@ public class RecipeStepDescriptionFragment extends Fragment{
         {
             recipe_detail.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,1f));
         }
+
+        onCreateView = true;
         return rootView;
     }
 
 
-    private void initializePlayer(FragmentActivity act, Uri mediaUri) {
+    private void initializePlayer(FragmentActivity act) {
         if (mExoPlayer == null) {
+
+            Uri.Builder b = Uri.parse(step.getVideoURL()).buildUpon();
+            Uri mediaUri = b.build();
+
+            mPlayerView.setVisibility(View.VISIBLE);
+            imageView.setVisibility(View.GONE);
+
             TrackSelector trackSelector = new DefaultTrackSelector();
             LoadControl loadControl = new DefaultLoadControl();
             mExoPlayer = ExoPlayerFactory.newSimpleInstance(act, trackSelector, loadControl);
@@ -179,6 +203,7 @@ public class RecipeStepDescriptionFragment extends Fragment{
                     act, userAgent), new DefaultExtractorsFactory(), null, null);
             mExoPlayer.prepare(mediaSource);
             mExoPlayer.setPlayWhenReady(true);
+            videoPlayed = true;
         }
     }
 

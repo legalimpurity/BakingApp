@@ -63,7 +63,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            NavUtils.navigateUpTo(this, new Intent(this, RecipeListActivity.class));
+            NavUtils.navigateUpFromSameTask(this);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -77,7 +77,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
     private void setAdapter(AppCompatActivity act)
     {
-        mSectionsPagerAdapter = new PotraitRecipeDetailPagerAdapter(act,recipe);
+        mSectionsPagerAdapter = new PotraitRecipeDetailPagerAdapter(act,recipe,pos);
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.setCurrentItem(pos);

@@ -14,18 +14,26 @@ public class PotraitRecipeDetailPagerAdapter extends FragmentPagerAdapter {
 
     private Recipe recipe;
     private AppCompatActivity act;
-    public PotraitRecipeDetailPagerAdapter(AppCompatActivity act, Recipe recipe) {
+    private int itemToBeSelected;
+    public PotraitRecipeDetailPagerAdapter(AppCompatActivity act, Recipe recipe, int itemToBeSelected) {
         super(act.getSupportFragmentManager());
         this.act = act;
         this.recipe = recipe;
+        this.itemToBeSelected = itemToBeSelected;
     }
 
     @Override
     public Fragment getItem(int position) {
         if(position == 0)
             return RecipeIngredientsDescriptionFragment.newInstance(recipe);
-        else
-            return RecipeStepDescriptionFragment.newInstance(recipe.getSteps().get(position - 1));
+        else {
+            boolean temp = false;
+            if(itemToBeSelected == position)
+                temp = true;
+            else
+                temp = false;
+            return RecipeStepDescriptionFragment.newInstance(recipe.getSteps().get(position - 1),temp);
+        }
     }
 
     @Override
