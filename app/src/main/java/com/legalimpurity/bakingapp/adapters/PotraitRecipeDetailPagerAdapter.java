@@ -38,6 +38,6 @@ public class PotraitRecipeDetailPagerAdapter extends FragmentPagerAdapter {
         if(position == 0)
             return act.getResources().getString(R.string.recipe_ingredients);
         else
-            return act.getResources().getString(R.string.recipe_steps_prefix,(position -1));
+            return act.getResources().getString(R.string.recipe_steps_prefix,(position));
     }
 }

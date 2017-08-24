@@ -2,6 +2,7 @@ package com.legalimpurity.bakingapp.adapters;
 
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,9 @@ import com.legalimpurity.bakingapp.R;
 import com.legalimpurity.bakingapp.listeners.RecipeIngridentClick;
 import com.legalimpurity.bakingapp.objects.Recipe;
 import com.legalimpurity.bakingapp.objects.Step;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by rajatkhanna on 21/08/17.
@@ -52,14 +56,17 @@ public class RecipeIngredientsDescriptionAdapter extends RecyclerView.Adapter<Re
     public class RecipeItemHolder extends RecyclerView.ViewHolder
     {
 
-        private ImageView backgroundImage;
-        private TextView recipeName;
-        private View rootView;
+        @BindView(R.id.root_view) View rootView;
+        @BindView(R.id.recipe_name) TextView recipeName;
+        @BindView(R.id.step_number) TextView stepNumber;
+
+        @BindView(R.id.recipe_image_available) ImageView imageAvailable;
+        @BindView(R.id.recipe_video_available) ImageView videoAvailable;
+        @BindView(R.id.recipe_text_available) ImageView textAvailable;
+
         private RecipeItemHolder(View itemView) {
             super(itemView);
-            backgroundImage = (ImageView) itemView.findViewById(R.id.backgroundImage);
-            recipeName = (TextView) itemView.findViewById(R.id.recipe_name);
-            rootView = (View) itemView.findViewById(R.id.root_view);
+            ButterKnife.bind(this,itemView);
         }
 
         void bind(final int pos)
@@ -70,10 +77,31 @@ public class RecipeIngredientsDescriptionAdapter extends RecyclerView.Adapter<Re
                     clicker.onRecipeIngridentCardCLick(v,pos);
                 }
             });
-            if(pos != 0)
-                recipeName.setText(((Step)recipeObj.getSteps().get(pos -1)).getShortDescription());
-            else
+            if(pos != 0) {
+                Step step = recipeObj.getSteps().get(pos - 1);
+
+                recipeName.setText(step.getShortDescription());
+                stepNumber.setText(act.getResources().getString(R.string.recipe_steps_prefix,pos));
+
+                imageHelper(step.getDescription(),textAvailable);
+                imageHelper(step.getThumbnailURL(),imageAvailable);
+                imageHelper(step.getVideoURL(),videoAvailable);
+            }
+            else {
                 recipeName.setText(act.getResources().getString(R.string.recipe_ingredients));
+                stepNumber.setText(act.getResources().getString(R.string.recipe_ingredient_prefix,recipeObj.getIngredients().size()));
+                imageHelper("",textAvailable);
+                imageHelper("",imageAvailable);
+                imageHelper("",videoAvailable);
+            }
+        }
+
+        private void imageHelper(String val, ImageView im)
+        {
+            if(!TextUtils.isEmpty(val))
+                im.setVisibility(View.VISIBLE);
+            else
+                im.setVisibility(View.GONE);
         }
     }
 }

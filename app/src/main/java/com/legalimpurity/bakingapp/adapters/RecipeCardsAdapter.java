@@ -59,14 +59,13 @@ public class RecipeCardsAdapter extends RecyclerView.Adapter<RecipeCardsAdapter.
 
     public class RecipeItemHolder extends RecyclerView.ViewHolder
     {
-
-        private ImageView backgroundImage;
         private TextView recipeName;
+        private TextView servings;
         private View rootView;
         private RecipeItemHolder(View itemView) {
             super(itemView);
-            backgroundImage = (ImageView) itemView.findViewById(R.id.backgroundImage);
             recipeName = (TextView) itemView.findViewById(R.id.recipe_name);
+            servings = (TextView) itemView.findViewById(R.id.servings);
             rootView = (View) itemView.findViewById(R.id.root_view);
         }
 
@@ -79,21 +78,7 @@ public class RecipeCardsAdapter extends RecyclerView.Adapter<RecipeCardsAdapter.
                 }
             });
             recipeName.setText(recipe.getName());
-            Picasso.with(act)
-                    .load(UrlUtils.BAKING_API_ROOT_URL + UrlUtils.BAKING_API_IMAGE_APPEND + recipe.getImage())
-                    .placeholder(R.mipmap.lamb_cutlets)
-                    .error(R.mipmap.lamb_cutlets)
-                    .into(backgroundImage, new Callback() {
-                        @Override
-                        public void onSuccess() {
-
-                        }
-
-                        @Override
-                        public void onError() {
-
-                        }
-                    });
+            servings.setText(act.getResources().getString(R.string.recipe_servings_prefix,recipe.getServings()));
         }
     }
 }

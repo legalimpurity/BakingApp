@@ -9,4 +9,7 @@
     <dimen name="recipe_step_height">80dp</dimen>
     <dimen name="ingredients_step_height">160dp</dimen>
 
+    <dimen name="root_recipe_list_item_margin">10dp</dimen>
+    <dimen name="recipe_list_item_margin">10dp</dimen>
+
 </resources>

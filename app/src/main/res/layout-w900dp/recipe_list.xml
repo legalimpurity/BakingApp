@@ -3,8 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
     android:baselineAligned="false"
     android:divider="?android:attr/dividerHorizontal"
     android:orientation="horizontal"
@@ -22,16 +20,15 @@
         android:name="com.legalimpurity.bakingapp.RecipeListFragment"
         android:layout_width="@dimen/item_width"
         android:layout_height="match_parent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
         app:layoutManager="LinearLayoutManager"
         tools:context="com.legalimpurity.bakingapp.activity.RecipeListActivity"
-        tools:listitem="@layout/recipe_list_content" />
+        tools:listitem="@layout/recipe_list_content"
+        android:layout_weight="0.2"/>
 
     <FrameLayout
         android:id="@+id/recipe_detail_container"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="3" />
+        android:layout_weight="0.8" />
 
 </LinearLayout>
