@@ -81,6 +81,10 @@ public class RecipeIngredientsDescriptionAdapter extends RecyclerView.Adapter<Re
                 Step step = recipeObj.getSteps().get(pos - 1);
 
                 recipeName.setText(step.getShortDescription());
+
+                // Gotta tag to check
+                recipeName.setTag(step.getId());
+
                 stepNumber.setText(act.getResources().getString(R.string.recipe_steps_prefix,pos));
 
                 imageHelper(step.getDescription(),textAvailable);

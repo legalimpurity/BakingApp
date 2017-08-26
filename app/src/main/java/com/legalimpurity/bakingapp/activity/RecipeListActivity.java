@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.FrameLayout;
 
 
 import com.legalimpurity.bakingapp.R;
@@ -39,24 +41,29 @@ public class RecipeListActivity extends AppCompatActivity {
     @BindView(R.id.recipe_list)
     View recyclerView;
 
+    @Nullable
+    @BindView(R.id.recipe_detail_container)
+    FrameLayout recipe_detail_container;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_list);
         ButterKnife.bind(this);
 
-        if(toolbar!=null) {
-            setSupportActionBar(toolbar);
-            toolbar.setTitle(getTitle());
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
 
         processFlow(this,savedInstanceState);
+
+        if(toolbar!=null) {
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setTitle(recipe.getName());
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         assert recyclerView != null;
         setupRecyclerView(this, (RecyclerView) recyclerView);
 
-        if (findViewById(R.id.recipe_detail_container) != null) {
+        if (recipe_detail_container != null) {
             mTwoPane = true;
         }
 

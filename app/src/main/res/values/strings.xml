@@ -7,6 +7,8 @@
     <string name="ingredient_sample_quant">2 CUP</string>
     <string name="serves_sample_quant">Serves: X</string>
     <string name="serves_sample_recipe">Nutella Pie</string>
+    <string name="recipe_short_description_sample">Prep the cookie crust.</string>
+    <string name="recipe_description_sample">2. Whisk the graham cracker crumbs, 50 grams (1/4 cup) of sugar, and 1/2 teaspoon of salt together in a medium bowl. Pour the melted butter and 1 teaspoon of vanilla into the dry ingredients and stir together until evenly mixed.</string>
 
     <string name="recipe_ingredients">Recipe Ingredients</string>
     <string name="recipe_steps_prefix">Step %d</string>

@@ -9,9 +9,11 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -77,8 +79,14 @@ public class RecipeStepDescriptionFragment extends Fragment{
     @BindView(R.id.recipeImageView)
     ImageView imageView;
 
+    @BindView(R.id.recipe_title)
+    TextView recipe_title;
+
     @BindView(R.id.recipe_detail)
     TextView recipe_detail;
+
+    @BindView(R.id.content_window)
+    FrameLayout content_window;
 
     public RecipeStepDescriptionFragment() {
     }
@@ -113,6 +121,7 @@ public class RecipeStepDescriptionFragment extends Fragment{
         ButterKnife.bind(this,rootView);
         if (step != null) {
             recipe_detail.setText(step.getDescription());
+            recipe_title.setText(step.getShortDescription());
         }
 
         if(!TextUtils.isEmpty(step.getVideoURL()))
@@ -144,7 +153,7 @@ public class RecipeStepDescriptionFragment extends Fragment{
         }
         else
         {
-            recipe_detail.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,1f));
+            content_window.setVisibility(View.GONE);
         }
 
         onCreateView = true;
