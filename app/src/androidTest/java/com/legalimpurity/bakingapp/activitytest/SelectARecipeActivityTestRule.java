@@ -24,13 +24,14 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withTagValue;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.is;
 
-public class SelectARecipeDataVerification {
+public class SelectARecipeActivityTestRule {
 
     public static final String STEP_SHORT_DESCRIPTION = "Melt butter and bittersweet chocolate.";
     public static final int STEP_SHORT_DESCRIPTION_ID = 2;
@@ -49,6 +50,7 @@ public class SelectARecipeDataVerification {
         Espresso.registerIdlingResources(mIdlingResource);
     }
 
+
     @Test
     public void clickRecipeGridView_OpensRecipeDetailsActivityOrFragmentInTwoPaneModeCheckRecyclerViewContent()
     {
@@ -57,6 +59,12 @@ public class SelectARecipeDataVerification {
                 withId(R.id.recipe_name),
                 withTagValue(is((Object) (int) STEP_SHORT_DESCRIPTION_ID)))
         ).check(matches(withText(STEP_SHORT_DESCRIPTION)));
+    }
+
+    @Test
+    public void clickRecyclerViewItemOpensRecipeStepListActivity(){
+        onView(withId(R.id.recipe_cards)).perform(RecyclerViewActions.actionOnItemAtPosition(1, click()));
+        onView(withId(R.id.recipe_list)).check(matches(isDisplayed()));
     }
 
     @After

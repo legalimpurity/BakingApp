@@ -62,7 +62,7 @@ public class SelectARecipe extends AppCompatActivity {
         ButterKnife.bind(this);
         setAdapter(this);
         getIdlingResource();
-        this. savedInstanceState = savedInstanceState;
+        this.savedInstanceState = savedInstanceState;
         mIdlingResource.setIdleState(false);
     }
 
