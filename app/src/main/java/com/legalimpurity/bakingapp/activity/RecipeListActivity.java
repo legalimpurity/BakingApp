@@ -118,9 +118,9 @@ public class RecipeListActivity extends AppCompatActivity {
                 else
                 {
                     Context context = v.getContext();
-                    Intent intent = new Intent(context, RecipeDetailActivity.class);
-                    intent.putExtra(RecipeDetailActivity.ARG_POS, pos);
-                    intent.putExtra(RecipeDetailActivity.ARG_RECIPE_OBJ, recipe);
+                    Intent intent = new Intent(context, PortraitRecipeDetailActivity.class);
+                    intent.putExtra(PortraitRecipeDetailActivity.ARG_POS, pos);
+                    intent.putExtra(PortraitRecipeDetailActivity.ARG_RECIPE_OBJ, recipe);
                     context.startActivity(intent);
                 }
             }

@@ -1,5 +1,6 @@
 package com.legalimpurity.bakingapp.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -11,7 +12,7 @@ import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 
 import com.legalimpurity.bakingapp.R;
-import com.legalimpurity.bakingapp.adapters.PotraitRecipeDetailPagerAdapter;
+import com.legalimpurity.bakingapp.adapters.PortraitRecipeDetailPagerAdapter;
 import com.legalimpurity.bakingapp.objects.Recipe;
 
 import butterknife.BindView;
@@ -23,12 +24,12 @@ import butterknife.ButterKnife;
  * item details are presented side-by-side with a list of items
  * in a {@link RecipeListActivity}.
  */
-public class RecipeDetailActivity extends AppCompatActivity {
-
+public class PortraitRecipeDetailActivity extends AppCompatActivity {
+    
     public static final String ARG_RECIPE_OBJ = "ARG_RECIPE_OBJ";
     public static final String ARG_POS = "ARG_POS";
 
-    private PotraitRecipeDetailPagerAdapter mSectionsPagerAdapter;
+    private PortraitRecipeDetailPagerAdapter mSectionsPagerAdapter;
 
     private int pos;
     private Recipe recipe;
@@ -69,15 +70,34 @@ public class RecipeDetailActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(ARG_RECIPE_OBJ,recipe);
+        outState.putInt(ARG_POS,pos);
+    }
+
+
     private void getData(AppCompatActivity act, Bundle savedInstanceState)
     {
-        pos = getIntent().getIntExtra(ARG_POS,0);
-        recipe = getIntent().getParcelableExtra(ARG_RECIPE_OBJ);
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(ARG_RECIPE_OBJ)) {
+                recipe = (Recipe) getIntent().getExtras().getParcelable(ARG_RECIPE_OBJ);
+                pos = (int) getIntent().getExtras().getInt(ARG_POS,0);
+            }
+        }
+        else if(getIntent() != null && getIntent().getExtras() != null) {
+            recipe = (Recipe) getIntent().getExtras().getParcelable(ARG_RECIPE_OBJ);
+            pos = getIntent().getIntExtra(ARG_POS,0);
+        }
+        else
+            NavUtils.navigateUpFromSameTask(act);
     }
 
     private void setAdapter(AppCompatActivity act)
     {
-        mSectionsPagerAdapter = new PotraitRecipeDetailPagerAdapter(act,recipe,pos);
+        mSectionsPagerAdapter = new PortraitRecipeDetailPagerAdapter(act,recipe,pos);
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.setCurrentItem(pos);

@@ -18,6 +18,7 @@ import com.legalimpurity.bakingapp.adapters.RecipeCardsAdapter;
 import com.legalimpurity.bakingapp.listeners.RecipeCardClick;
 import com.legalimpurity.bakingapp.objects.Recipe;
 import com.legalimpurity.bakingapp.retrofitInterfaces.BakingClient;
+import com.legalimpurity.bakingapp.widgets.IngredientsWidgetService;
 
 import java.util.ArrayList;
 
@@ -112,6 +113,9 @@ public class SelectARecipe extends AppCompatActivity {
         mAdapter = new RecipeCardsAdapter(act, new RecipeCardClick() {
             @Override
             public void onRecipeCardCLick(Recipe recipe) {
+
+                IngredientsWidgetService.startActionUpdateRecipeWidgets(act, recipe);
+
                 Intent goToRecipeListActivity = new Intent(act,RecipeListActivity.class);
                 goToRecipeListActivity.putExtra(RecipeListActivity.RECIPE_OBJECT_KEY,recipe);
                 act.startActivity(goToRecipeListActivity);

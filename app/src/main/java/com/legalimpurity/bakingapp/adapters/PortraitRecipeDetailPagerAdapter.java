@@ -10,12 +10,12 @@ import com.legalimpurity.bakingapp.fragments.RecipeIngredientsDescriptionFragmen
 import com.legalimpurity.bakingapp.fragments.RecipeStepDescriptionFragment;
 import com.legalimpurity.bakingapp.objects.Recipe;
 
-public class PotraitRecipeDetailPagerAdapter extends FragmentPagerAdapter {
+public class PortraitRecipeDetailPagerAdapter extends FragmentPagerAdapter {
 
     private Recipe recipe;
     private AppCompatActivity act;
     private int itemToBeSelected;
-    public PotraitRecipeDetailPagerAdapter(AppCompatActivity act, Recipe recipe, int itemToBeSelected) {
+    public PortraitRecipeDetailPagerAdapter(AppCompatActivity act, Recipe recipe, int itemToBeSelected) {
         super(act.getSupportFragmentManager());
         this.act = act;
         this.recipe = recipe;
