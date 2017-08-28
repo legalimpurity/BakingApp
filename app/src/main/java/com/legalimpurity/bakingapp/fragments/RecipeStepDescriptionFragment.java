@@ -101,9 +101,15 @@ public class RecipeStepDescriptionFragment extends Fragment{
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        releasePlayer();
+    public void onResume() {
+        super.onResume();
+            initializePlayer(getActivity());
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+            releasePlayer();
     }
 
     @Override
