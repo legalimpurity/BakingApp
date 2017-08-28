@@ -20,9 +20,9 @@
             android:paddingStart="@dimen/material_card_title_block_padding_horizontal"
             android:paddingEnd="0dp"
             app:srcCompat="@mipmap/recipe_icon"
-            tools:ignore="ContentDescription"
             android:paddingLeft="@dimen/material_card_title_block_padding_horizontal"
-            android:paddingRight="0dp" />
+            android:paddingRight="0dp"
+            android:id="@+id/recipe_image"/>
 
 
         <LinearLayout
