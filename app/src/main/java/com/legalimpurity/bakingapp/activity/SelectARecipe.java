@@ -7,13 +7,17 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 import android.support.test.espresso.IdlingResource;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.TextView;
 
 import com.legalimpurity.bakingapp.IdlingResource.SimpleIdlingResource;
 import com.legalimpurity.bakingapp.R;
+import com.legalimpurity.bakingapp.Utils.UrlUtils;
 import com.legalimpurity.bakingapp.adapters.RecipeCardsAdapter;
 import com.legalimpurity.bakingapp.listeners.RecipeCardClick;
 import com.legalimpurity.bakingapp.objects.Recipe;
@@ -38,6 +42,12 @@ public class SelectARecipe extends AppCompatActivity {
 
     @BindView(R.id.recipe_cards)
     RecyclerView recipe_cards;
+
+    @BindView(R.id.progress)
+    SwipeRefreshLayout mProgressBar;
+
+    @BindView(R.id.error_window)
+    TextView errorWindow;
 
     private RecipeCardsAdapter mAdapter;
     private ArrayList<Recipe> recipeList;
@@ -65,6 +75,7 @@ public class SelectARecipe extends AppCompatActivity {
         getIdlingResource();
         this.savedInstanceState = savedInstanceState;
         mIdlingResource.setIdleState(false);
+        addRefreshBar(this);
     }
 
     @Override
@@ -79,6 +90,17 @@ public class SelectARecipe extends AppCompatActivity {
     {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(SAVED_INSTANCE_DATA, recipeList);
+    }
+
+    private void addRefreshBar(final AppCompatActivity act)
+    {
+        mProgressBar.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                hitNetwork(act);
+            }
+        });
+
     }
 
     private void checkForSavedInstanceState(Bundle savedInstanceState, AppCompatActivity act)
@@ -128,46 +150,61 @@ public class SelectARecipe extends AppCompatActivity {
 
     private void hitNetwork (AppCompatActivity act)
     {
-        String API_BASE_URL = "https://d17h27t6h515a5.cloudfront.net/";
+        if(UrlUtils.isNetworkAvailable(act)) {
+            mProgressBar.setRefreshing(true);
 
-        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+            String API_BASE_URL = "https://d17h27t6h515a5.cloudfront.net/";
 
-        Retrofit.Builder builder =
-                new Retrofit.Builder()
-                        .baseUrl(API_BASE_URL)
-                        .addConverterFactory(
-                                GsonConverterFactory.create()
-                        );
+            OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
-        Retrofit retrofit =
-                builder
-                        .client(
-                                httpClient.build()
-                        )
-                        .build();
+            Retrofit.Builder builder =
+                    new Retrofit.Builder()
+                            .baseUrl(API_BASE_URL)
+                            .addConverterFactory(
+                                    GsonConverterFactory.create()
+                            );
 
-        BakingClient client =  retrofit.create(BakingClient.class);
+            Retrofit retrofit =
+                    builder
+                            .client(
+                                    httpClient.build()
+                            )
+                            .build();
 
-        Call<ArrayList<Recipe>> call =
-                client.recipesForBaking("2017","May");
+            BakingClient client = retrofit.create(BakingClient.class);
 
-        call.enqueue(new Callback<ArrayList<Recipe>>() {
-            @Override
-            public void onResponse(Call<ArrayList<Recipe>> call, Response<ArrayList<Recipe>> response) {
+            Call<ArrayList<Recipe>> call =
+                    client.recipesForBaking("2017", "May");
 
-                if(response.isSuccessful()) {
-                    recipeList = response.body();
-                    mAdapter.setMoviesData(recipeList);
-                } else {
+            call.enqueue(new Callback<ArrayList<Recipe>>() {
+                @Override
+                public void onResponse(Call<ArrayList<Recipe>> call, Response<ArrayList<Recipe>> response) {
 
+                    if (response.isSuccessful()) {
+                        recipeList = response.body();
+                        mAdapter.setMoviesData(recipeList);
+                        mProgressBar.setRefreshing(false);
+                        errorWindow.setVisibility(View.GONE);
+                    } else {
+
+                    }
+                    mIdlingResource.setIdleState(true);
                 }
-                mIdlingResource.setIdleState(true);
-            }
 
-            @Override
-            public void onFailure(Call<ArrayList<Recipe>> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
+                @Override
+                public void onFailure(Call<ArrayList<Recipe>> call, Throwable t) {
+                    t.printStackTrace();
+                    mProgressBar.setRefreshing(true);
+                    errorWindow.setText(R.string.api_error);
+                    errorWindow.setVisibility(View.VISIBLE);
+                }
+            });
+        }
+        else
+        {
+            mProgressBar.setRefreshing(false);
+            errorWindow.setText(R.string.no_internet);
+            errorWindow.setVisibility(View.VISIBLE);
+        }
     }
 }
